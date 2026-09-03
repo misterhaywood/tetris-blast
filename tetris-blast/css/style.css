@@ -1,0 +1,374 @@
+/* ============================================================
+   TETRIS BLAST — layout & chrome
+   All motion lives on the canvases. CSS here stays static so
+   the browser never has to composite animated layers.
+   ============================================================ */
+
+:root {
+  --ink:        #05030f;
+  --panel:      rgba(8, 6, 24, 0.82);
+  --edge:       rgba(255, 255, 255, 0.10);
+  --text:       #e8e6ff;
+  --dim:        #8d88b8;
+  --hot:        #ff3ea5;
+  --cool:       #22e5ff;
+  --gold:       #ffd93d;
+  --lime:       #4dff88;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  overflow: hidden;
+  -webkit-font-smoothing: none;
+}
+
+/* ---------- full-screen layers ---------- */
+
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+#vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(ellipse at center,
+  rgba(0,0,0,0) 35%,
+  rgba(0,0,0,0.55) 100%);
+}
+
+#scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  opacity: 0.35;
+  background: repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,0.30) 0px,
+          rgba(0,0,0,0.30) 1px,
+          transparent 1px,
+          transparent 3px
+  );
+}
+
+/* ---------- layout ---------- */
+
+#app {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 156px;
+}
+
+#stage {
+  position: relative;
+  flex: none;
+}
+
+/* The right column stretches so the command list can be pushed to the
+   bottom of it — bottom-right of the play area, out of the way of the
+   numbers you actually watch while playing. */
+.column.right {
+  align-self: stretch;
+  justify-content: flex-start;
+}
+
+#game-canvas {
+  display: block;
+  border-radius: 10px;
+  background: rgba(4, 2, 14, 0.72);
+  box-shadow:
+          0 0 0 3px rgba(255, 62, 165, 0.55),
+          0 0 0 6px rgba(34, 229, 255, 0.28),
+          0 0 42px rgba(255, 62, 165, 0.30),
+          0 18px 60px rgba(0, 0, 0, 0.75);
+}
+
+/* ---------- panels ---------- */
+
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--edge);
+  border-radius: 10px;
+  padding: 10px;
+  backdrop-filter: blur(3px);
+}
+
+.panel h2 {
+  font-size: 8px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+.panel canvas { display: block; margin: 0 auto; }
+
+.p-score  { border-color: rgba(255, 217,  61, 0.45); }
+.p-score  h2 { color: var(--gold); }
+.p-next   { border-color: rgba(255,  62, 165, 0.45); }
+.p-next   h2 { color: var(--hot); }
+.p-stats  { border-color: rgba( 34, 229, 255, 0.45); }
+.p-hold   { border-color: rgba( 77, 255, 136, 0.45); }
+.p-hold   h2 { color: var(--lime); }
+.p-theme  { border-color: rgba(255, 159,  28, 0.45); }
+.p-theme  h2 { color: #ff9f1c; }
+.p-fighter{ border-color: rgba(199, 125, 255, 0.45); }
+.p-fighter h2 { color: #c77dff; }
+
+.big {
+  font-size: 18px;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+.sub {
+  margin-top: 8px;
+  font-size: 7px;
+  color: var(--dim);
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+}
+.stat + .stat { border-top: 1px solid rgba(255,255,255,0.07); }
+.stat span { font-size: 7px; color: var(--dim); }
+.stat b    { font-size: 13px; font-weight: normal; color: var(--cool); }
+
+/* ---------- command list ---------- */
+/* Reference material, not a status readout: pushed to the bottom of the
+   right column and toned well down so it never pulls the eye mid-drop. */
+
+.p-keys {
+  margin-top: auto;
+  background: rgba(6, 4, 18, 0.55);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.p-keys h2 {
+  font-weight: 700;
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: #7d78a6;
+  text-shadow: none;
+  margin-bottom: 9px;
+}
+
+.p-keys ul { list-style: none; }
+.p-keys li {
+  font-size: 6px;
+  color: #6f6a94;
+  line-height: 2.1;
+  white-space: nowrap;
+}
+kbd {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 3px;
+  padding: 2px 4px;
+  margin-right: 2px;
+  color: #9d98c0;
+  font: inherit;
+  font-size: 6px;
+}
+
+/* ---------- theme picker ---------- */
+
+.theme-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.theme-buttons button {
+  height: 26px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.theme-buttons button:hover { transform: translateY(-2px); }
+.theme-buttons button.active {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.55);
+}
+
+.theme-name, .fighter-name {
+  margin-top: 8px;
+  font-size: 7px;
+  text-align: center;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+
+.mini-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 0;
+  font-family: inherit;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: var(--ink);
+  background: linear-gradient(180deg, #c77dff, #7b2cbf);
+  border: 2px solid #e0b3ff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.mini-btn:hover { filter: brightness(1.15); }
+.mini-btn:active { transform: translateY(1px); }
+
+/* ---------- overlay ---------- */
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: rgba(3, 2, 10, 0.90);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  z-index: 20;
+}
+#overlay.hidden { display: none; }
+
+#overlay-icon  { font-size: 48px; margin-bottom: 14px; }
+#overlay-title {
+  font-size: 17px;
+  font-weight: normal;
+  color: var(--gold);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  text-shadow: 0 0 18px rgba(255, 217, 61, 0.7);
+}
+#overlay-body {
+  font-size: 7px;
+  color: var(--cool);
+  line-height: 2.3;
+}
+
+#start-btn {
+  margin-top: 26px;
+  padding: 13px 20px;
+  font-family: inherit;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #1a0a00;
+  background: linear-gradient(180deg, #ffd93d, #ff9f1c);
+  border: 3px solid #fff3c4;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(255, 217, 61, 0.5);
+}
+#start-btn:hover { filter: brightness(1.12); }
+#start-btn:active { transform: translateY(1px); }
+
+/* ---------- touch ---------- */
+
+#touchpad {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 500;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px;
+  background: rgba(3, 2, 10, 0.85);
+}
+#touchpad button {
+  padding: 15px 0;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.22);
+  border-radius: 8px;
+}
+#touchpad button:active { background: rgba(255,255,255,0.22); }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  #app { gap: 10px; padding: 8px; }
+  .column { width: 116px; }
+  .panel { padding: 7px; }
+  .big { font-size: 14px; }
+}
+
+@media (max-width: 720px) {
+  #app { flex-direction: column; gap: 8px; padding: 6px 6px 150px; justify-content: flex-start; }
+  .column { flex-direction: row; width: auto; max-width: 100%; overflow-x: auto; }
+  .column .panel { flex: none; }
+  .p-keys { display: none; }
+  #game-canvas { width: 260px; height: 520px; }
+  #touchpad { display: grid; }
+}
+
+/* ---------- picker lock ---------- */
+/* Theme and fighter are chosen before the round, then frozen until
+   game over, so a run can't be restyled halfway through. */
+
+.lock-note {
+  display: none;
+  margin-top: 7px;
+  font-size: 6px;
+  text-align: center;
+  color: #ff6b8a;
+  letter-spacing: 1px;
+}
+
+.panel.locked .lock-note { display: block; }
+
+.panel.locked {
+  border-color: rgba(255, 255, 255, 0.08);
+  opacity: 0.55;
+}
+
+.panel.locked .theme-buttons button,
+.panel.locked .mini-btn {
+  cursor: not-allowed;
+  filter: grayscale(0.85);
+}
+
+.panel.locked .theme-buttons button:hover,
+.panel.locked .mini-btn:hover {
+  transform: none;
+  filter: grayscale(0.85);
+}
+
+.mini-btn:disabled {
+  background: linear-gradient(180deg, #6b6b7a, #44444f);
+  border-color: #7a7a88;
+  color: #c9c9d4;
+}

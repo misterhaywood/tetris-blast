@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TETRIS BLAST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="vignette"></div>
+<div id="scanlines"></div>
+
+<div id="app">
+
+  <!-- LEFT COLUMN -->
+  <aside class="column left">
+    <section class="panel p-hold">
+      <h2>HOLD</h2>
+      <canvas id="hold-canvas" width="120" height="90"></canvas>
+    </section>
+
+    <section class="panel p-theme" id="theme-panel">
+      <h2>THEME</h2>
+      <div id="theme-buttons" class="theme-buttons"></div>
+      <p id="theme-name" class="theme-name">NEON GRID</p>
+      <p class="lock-note">LOCKED THIS ROUND</p>
+    </section>
+
+    <section class="panel p-fighter" id="fighter-panel">
+      <h2>FIGHTER</h2>
+      <canvas id="fighter-canvas" width="120" height="120"></canvas>
+      <p id="fighter-name" class="fighter-name">RYU</p>
+      <button id="fighter-btn" class="mini-btn">CHANGE</button>
+      <p class="lock-note">LOCKED THIS ROUND</p>
+    </section>
+  </aside>
+
+  <!-- CENTER -->
+  <main id="stage">
+    <canvas id="game-canvas" width="320" height="640"></canvas>
+
+    <div id="overlay">
+      <div id="overlay-icon">🎮</div>
+      <h1 id="overlay-title">TETRIS BLAST</h1>
+      <p id="overlay-body">
+        CLEAR LINES TO UNLEASH YOUR FIGHTER<br>
+        THEME AND FIGHTER LOCK IN AT START
+      </p>
+      <button id="start-btn">PRESS ENTER</button>
+    </div>
+  </main>
+
+  <!-- RIGHT COLUMN -->
+  <aside class="column right">
+    <section class="panel p-score">
+      <h2>SCORE</h2>
+      <p class="big" id="ui-score">0</p>
+      <p class="sub">BEST <span id="ui-best">0</span></p>
+    </section>
+
+    <section class="panel p-next">
+      <h2>NEXT</h2>
+      <canvas id="next-canvas" width="120" height="230"></canvas>
+    </section>
+
+    <section class="panel p-stats">
+      <div class="stat"><span>LEVEL</span><b id="ui-level">1</b></div>
+      <div class="stat"><span>LINES</span><b id="ui-lines">0</b></div>
+      <div class="stat"><span>COMBO</span><b id="ui-combo">0</b></div>
+    </section>
+
+    <section class="panel p-keys">
+      <h2>COMMAND LIST</h2>
+      <ul>
+        <li><kbd>←</kbd><kbd>→</kbd> MOVE</li>
+        <li><kbd>↓</kbd> SOFT DROP</li>
+        <li><kbd>↑</kbd><kbd>X</kbd> ROTATE CW</li>
+        <li><kbd>Z</kbd> ROTATE CCW</li>
+        <li><kbd>SPACE</kbd> HARD DROP</li>
+        <li><kbd>C</kbd> HOLD</li>
+        <li><kbd>P</kbd> PAUSE</li>
+      </ul>
+    </section>
+  </aside>
+</div>
+
+<!-- TOUCH PAD (mobile) -->
+<div id="touchpad">
+  <button data-act="left">◀</button>
+  <button data-act="rotate">↻</button>
+  <button data-act="right">▶</button>
+  <button data-act="hold">HOLD</button>
+  <button data-act="soft">▼</button>
+  <button data-act="hard">⤓</button>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/backgrounds.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/game.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
